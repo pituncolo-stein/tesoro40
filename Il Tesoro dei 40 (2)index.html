@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Il Tesoro dei 40</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎉</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1effb;--card:#fff;--ink:#151a3a;--mute:#5d6288;--acc:#3a3adf;--on:#fff;--gold:#ffc931;--ok:#1c8a5a;--ko:#c0392b;--line:#d9d6f0;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1330;--card:#1a2050;--ink:#f1f0ff;--mute:#a9acd6;--acc:#9a9aff;--on:#0f1330;--gold:#ffd666;--ok:#5fcf8b;--ko:#ff7b6b;--line:#323a78;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1330;--card:#1a2050;--ink:#f1f0ff;--mute:#a9acd6;--acc:#9a9aff;--on:#0f1330;--gold:#ffd666;--ok:#5fcf8b;--ko:#ff7b6b;--line:#323a78;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.45 "Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:18px 16px 40px}
+h1,h2{font-weight:800;line-height:1.05;margin:0 0 8px}
+h2{font-size:26px}
+.big{font-size:120px;font-weight:800;line-height:.85;color:var(--acc);letter-spacing:-6px;margin:8px 0 4px}
+.m{color:var(--mute);margin:0 0 14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin:0 0 12px}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.bar{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--line);padding:4px 0 10px;margin-bottom:16px}
+.pts{background:var(--gold);color:#151a3a;font-weight:800;border-radius:99px;padding:2px 12px}
+button,input{font:inherit}
+.btn{display:block;width:100%;background:var(--acc);color:var(--on);border:0;border-radius:14px;padding:14px;font-weight:700;cursor:pointer;margin-top:8px}
+.btn.alt{background:transparent;color:var(--acc);border:2px solid var(--acc)}
+input{width:100%;padding:13px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);text-transform:uppercase}
+.o{display:block;width:100%;text-align:left;background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:11px 12px;margin-top:8px;cursor:pointer}
+.o.ok{border-color:var(--ok);background:var(--ok);color:#fff}.o.ko{border-color:var(--ko);color:var(--ko)}
+.sl{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:10px 0}
+.sl div{aspect-ratio:1;border:2px dashed var(--line);border-radius:12px;display:grid;place-items:center;font-size:28px;font-weight:800;color:var(--mute)}
+.sl .on{border:2px solid var(--acc);background:var(--acc);color:var(--on)}
+.tag{color:var(--ok);font-weight:700}
+.msg{background:var(--gold);color:#151a3a;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-weight:700}
+.back{background:none;border:0;color:var(--acc);font-weight:700;padding:10px 0;cursor:pointer}
+.fin{text-align:center}.fin .big{font-size:96px}
+</style></head><body><main id="app"></main>
+<script>
+/* ===== CONFIGURAZIONE: modifica qui ===== */
+const C={
+ festeggiati:["Marco","Davide","Danilo"],
+ parolaFinale:"AUGURI",
+ album:"", /* incolla il link dell’album foto condiviso (Google Foto, iCloud…) */
+ qr:[ /* t = codice nel link del QR (#q1…), code = parola stampata sotto il QR, hint = dove cercarlo */
+  {t:"q1",l:"A",code:"PIZZA",hint:"Dove si brinda"},
+  {t:"q2",l:"U",code:"COLOSSEO",hint:"Vicino al buffet"},
+  {t:"q3",l:"G",code:"TREVI",hint:"Dove si lasciano i cappotti"},
+  {t:"q4",l:"U",code:"TIRAMISU",hint:"Sotto un tavolo"},
+  {t:"q5",l:"R",code:"CARBONARA",hint:"Vicino alla consolle del DJ"},
+  {t:"q6",l:"I",code:"FONTANA",hint:"Dove si balla"}],
+ /* a = indice (da 0) della risposta giusta. “Chi è chi”: CAMBIA le risposte con quelle vere! */
+ chi:[ /* 0 = Marco, 1 = Davide, 2 = Danilo. Righe 1-5 facili, 6-10 medie, 11-15 difficili */
+  ["Chi dei tre al biliardino urla di più dopo un gol?",0],["Chi dei tre senza Google Maps si perderebbe a Roma?",1],["Chi dei tre dice “arrivo tra 5 minuti” e ne impiega 45?",2],["Chi dei tre balla con più entusiasmo e meno talento?",0],["Chi dei tre si addormenta per primo sul divano dopo cena?",1],
+  ["Chi ha avuto la prima macchina più scassata?",2],["Chi ha preso la patente per ultimo?",0],["Chi cucina meglio?",1],["Chi è il tifoso più scatenato?",2],["Chi dei tre risponde ai messaggi dopo tre giorni?",0],
+  ["Chi dei tre si è fatto più male giocando a ping pong o a biliardino?",1],["Chi dei tre aveva i voti più bassi in greco al liceo?",2],["Chi ha conosciuto per primo gli altri due?",0],["Chi ha cambiato più lavori?",1],["Come si chiamavano i pupazzi che Danilo e Marco portarono al liceo per fare gli stupidi?",1,["Gallina e Brontolo","Pollo e Quirzingibaldo","Pulcino e Gastone","Pippo e Archibaldo"]]
+ ].map(([q,a,o])=>({q,o:o||["Marco","Davide","Danilo"],a})),
+ anni:[ /* [domanda, [opzioni], indice risposta giusta] */
+  ["Quale personaggio Nintendo è l’idraulico con la tuta rossa?",["Luigi","Mario","Wario","Yoshi"],1],
+  ["Quale cartone ha per protagonista Goku?",["Naruto","One Piece","Dragon Ball","Holly e Benji"],2],
+  ["Chi ha cantato “Thriller”?",["Prince","Michael Jackson","Madonna","George Michael"],1],
+  ["Chi vinse i Mondiali di calcio del 2006?",["Francia","Brasile","Germania","Italia"],3],
+  ["Quale film del 1986 ha Tom Cruise come pilota di jet?",["Cocktail","Rain Man","Top Gun","Codice d’onore"],2],
+  ["Chi vinse i Mondiali di calcio del 1986?",["Italia","Argentina","Germania Ovest","Brasile"],1],
+  ["Quale videogioco con l’eroe Link uscì nel 1986?",["Sonic","Zelda","Pac-Man","Tetris"],1],
+  ["Chi cantava “Like a Virgin”?",["Cyndi Lauper","Whitney Houston","Madonna","Tina Turner"],2],
+  ["Quale console portatile Nintendo uscì nel 1989 insieme a Tetris?",["Game Boy","Game Gear","PSP","DS"],0],
+  ["In che anno l’euro in contanti è arrivato in Italia?",["1999","2001","2002","2004"],2],
+  ["Chi vinse Sanremo nel 1986?",["Vasco Rossi","Zucchero","Eros Ramazzotti","Jovanotti"],2],
+  ["Quale squadra vinse lo scudetto 1985-86?",["Roma","Juventus","Napoli","Inter"],1],
+  ["Quale film del 1986 racconta un liceale che salta la scuola per una giornata?",["Karate Kid","Breakfast Club","Footloose","Una pazza giornata di vacanze"],3],
+  ["In che anno uscì il primo Sonic the Hedgehog?",["1989","1991","1993","1995"],1],
+  ["Chi vinse il Pallone d’oro nel 2006?",["Ronaldinho","Fabio Cannavaro","Zinedine Zidane","Kaká"],1]
+ ].map(([q,o,a])=>({q,o,a})),
+ storia:[ /* la vostra storia: le risposte derivano dai fatti che mi hai dato */
+  ["Dove vi riunivate nei weekend?",["A casa dei nonni di Danilo","A casa dei nonni di Marco","Al bar della piazza","A casa dei nonni di Davide"],0],
+  ["In quale liceo avete studiato tutti e tre?",["Liceo scientifico Primo Levi","Liceo classico Ugo Foscolo","Liceo classico Tasso","Liceo scientifico Newton"],1],
+  ["Per quale squadra tifano Marco e Danilo?",["Lazio","Juventus","Roma","Milan"],2],
+  ["In quale città vive oggi Marco?",["Berlino","Londra","Roma","Manchester"],1],
+  ["Chi dei tre non ha figli?",["Marco","Davide","Danilo"],0],
+  ["Chi dei tre ha due figli?",["Marco","Davide","Danilo"],2],
+  ["Per quale occasione fu regalato il tavolo da ping pong?",["Un compleanno","La laurea di Danilo","Un matrimonio","Il diploma di Marco"],1],
+  ["Chi dei tre ha un solo figlio?",["Marco","Davide","Danilo"],1],
+  ["In quale Paese si trasferì Marco nel 2013?",["Inghilterra","Germania","Spagna","Francia"],1],
+  ["Chi dei tre è amico sia di Marco sia di Davide?",["Danilo","Davide","Marco"],0],
+  ["In che anno Marco si trasferì in Inghilterra?",["2013","2014","2015","2016"],2],
+  ["Per quanti anni Marco visse in Germania?",["1","2","5","10"],1],
+  ["Quali due dei tre festeggiati sono solo conoscenti?",["Marco e Danilo","Danilo e Davide","Marco e Davide"],2],
+  ["Quanti figli hanno in tutto i tre festeggiati?",["2","3","4","5"],1],
+  ["Quanti anni sono passati dal trasferimento di Marco in Germania (2013) a oggi?",["11","12","13","15"],2]
+ ].map(([q,o,a])=>({q,o,a})),
+ piccoli:[
+  ["Quanti sono i festeggiati?",["2","3","4"],1],
+  ["In quale città è la festa?",["Milano","Roma","Napoli"],1],
+  ["Quanti anni compiono i festeggiati?",["14","30","40"],2],
+  ["Quale animale è il re della giungla?",["Leone","Zebra","Scimmia"],0],
+  ["Quanti giorni ha una settimana?",["5","7","10"],1],
+  ["Quale pianeta è chiamato il Pianeta Rosso?",["Venere","Marte","Saturno"],1],
+  ["Quanti lati ha un esagono?",["5","6","8"],1],
+  ["Come si chiama il capo dei pirati in Peter Pan?",["Capitan Uncino","Barbanera","Jack Sparrow"],0],
+  ["Quale animale è il più alto del mondo?",["Elefante","Giraffa","Cammello"],1],
+  ["Quale pesciolino pagliaccio è il protagonista di un film Pixar?",["Dory","Nemo","Bruce"],1],
+  ["Quante zampe ha un ragno?",["6","8","10"],1],
+  ["Quale fiume attraversa Roma?",["Po","Arno","Tevere"],2],
+  ["Chi ha fondato Roma secondo la leggenda?",["Romolo","Giulio Cesare","Augusto"],0],
+  ["Qual è il pianeta più grande del sistema solare?",["Terra","Giove","Nettuno"],1],
+  ["Quanti minuti ci sono in due ore?",["100","120","200"],1]
+ ].map(([q,o,a])=>({q,o,a})),
+ foto:[
+  "Selfie con qualcuno che conosce uno dei festeggiati da prima del 2005",
+  "Foto di squadra: tutti insieme formate il numero 40",
+  "Selfie con uno dei tre festeggiati",
+  "Foto con la persona più giovane della sala",
+  "Foto con chi è venuto da più lontano"]
+};
+/* ======================================== */
+const Q={storia:C.storia,chi:C.chi,anni:C.anni,kid:C.piccoli};
+const T={storia:"La nostra storia",chi:"Chi è chi",anni:"Anni ’86",kid:"Missione piccoli"};
+const D={storia:"Quanto conoscete la storia dei tre amici? Una sola risposta per domanda.",chi:"Conoscete davvero i festeggiati? Una sola risposta per domanda.",anni:"Siete nati nel 1986 o giù di lì? Mettete alla prova la memoria.",kid:"Domande facili: lasciate rispondere i bambini!"};
+const V={chi:10,anni:10,kid:5};
+let S={team:"",start:0,qr:{},ans:{},ph:{},fin:0,view:"home"},flash="";
+try{const x=localStorage.getItem("t40");if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
+const save=()=>{try{localStorage.setItem("t40",JSON.stringify(S))}catch(e){}};
+const $=document.getElementById("app");
+const nq=()=>Object.keys(S.qr).length;
+function pts(){let p=nq()*10+Object.keys(S.ph).length*10+(S.fin?50:0);
+ for(const k in Q)Q[k].forEach((q,i)=>{if(S.ans[k+i]===q.a)p+=[5,10,15][i/5|0]});return p}
+const go=v=>{S.view=v;flash="";save();draw();scrollTo(0,0)};
+function got(t){const f=C.qr.find(x=>x.t===t);if(!f)return false;S.qr[t]=1;flash="QR trovato! Lettera "+f.l;return true}
+function hash(){const t=(location.hash||"").slice(1);if(t&&got(t)){if(S.team)S.view="qr";save();draw()}}
+function start(){const v=document.getElementById("tn").value.trim();if(!v)return;S.team=v;S.start=S.start||Date.now();S.view="hub";save();draw()}
+function ans(id,j){S.ans[id]=j;save();draw()}
+function ph(i){S.ph[i]?delete S.ph[i]:S.ph[i]=1;save();draw()}
+function code(){const v=document.getElementById("cd").value.trim().toUpperCase();const f=C.qr.find(x=>x.code===v);
+ if(f){got(f.t);save();draw()}else{flash="Codice non valido. Controlla la parola sotto il QR.";draw()}}
+function fin(){const v=document.getElementById("fw").value.trim().toUpperCase();
+ if(v===C.parolaFinale){S.fin=Date.now();save();draw()}else{flash="Non è la parola giusta. Rimettete in ordine le lettere.";draw()}}
+function reset(){if(confirm("Ricominciare da zero su questo telefono?")){S={team:"",start:0,qr:{},ans:{},ph:{},fin:0,view:"home"};save();draw()}}
+const back=()=>`<button class=back onclick="go('hub')">‹ Torna alle missioni</button>`;
+const msg=()=>flash?`<div class=msg>${flash}</div>`:"";
+function quiz(k){return `${back()}<h2>${T[k]}</h2><p class=m>${D[k]}</p>`+Q[k].map((q,i)=>{const id=k+i,a=S.ans[id];
+ return (i%5?"":`<h3 style="margin:18px 0 8px">${["Livello facile: 5 punti ciascuna","Livello medio: 10 punti ciascuna","Livello difficile: 15 punti ciascuna"][i/5|0]}</h3>`)+`<div class=card><b>${i+1}. ${q.q}</b>`+q.o.map((o,j)=>`<button class="o ${a===undefined?"":j===q.a?"ok":a===j?"ko":""}" ${a===undefined?`onclick="ans('${id}',${j})"`:"disabled"}>${o}</button>`).join("")+`</div>`}).join("")}
+function qrv(){const n=nq();return `${back()}<h2>Caccia ai QR</h2><p class=m>In sala sono nascosti 6 QR code. Ognuno svela una lettera. Inquadrateli con la fotocamera: se non si apre, scrivete qui sotto la parola stampata sotto il QR.</p>${msg()}
+ <div class=sl>${C.qr.map(f=>`<div class="${S.qr[f.t]?"on":""}">${S.qr[f.t]?f.l:"?"}</div>`).join("")}</div>
+ <p class=m><b>${n}/6</b> trovati</p>
+ <div class=card><input id=cd placeholder="Parola sotto il QR" autocomplete=off><button class=btn onclick="code()">Sblocca lettera</button></div>`+
+ C.qr.filter(f=>!S.qr[f.t]).map(f=>`<p class=m>Indizio: ${f.hint}</p>`).join("")}
+function photo(){return `${back()}<h2>Missione foto</h2><p class=m>Fate la foto, poi toccate “Fatto”. ${C.album?"Caricate gli scatti nell’album della festa.":"Mostrate le foto agli organizzatori."}</p>`+
+ (C.album?`<a class="btn alt" style="text-align:center;text-decoration:none" href="${C.album}" target="_blank" rel="noopener">Apri l’album condiviso</a><br>`:"")+
+ C.foto.map((t,i)=>`<div class=card><b>${t}</b><button class="btn ${S.ph[i]?"":"alt"}" onclick="ph(${i})">${S.ph[i]?"Fatto ✓":"Segna come fatto"}</button></div>`).join("")}
+function finv(){
+ if(S.fin){const m=Math.max(1,Math.round((S.fin-S.start)/60000));return `<div class=fin><div class=big>40</div><h2>Tesoro sbloccato!</h2><p class=m>Squadra <b>${S.team}</b></p><div class=card><p class=pts style="display:inline-block;font-size:28px">${pts()} punti</p><p class=m>Tempo: ${m} minuti</p></div><p><b>Mostrate questa schermata agli organizzatori e ritirate il premio.</b></p>${back()}</div>`}
+ const lock=nq()<6;return `${back()}<h2>Il tesoro</h2>`+(lock?`<p class=m>Servono tutte e 6 le lettere. Ne avete ${nq()}.</p>`:`<p class=m>Rimettete in ordine le lettere: ${C.qr.map(f=>f.l).join(" ")}. Quale parola formano?</p>${msg()}<div class=card><input id=fw placeholder="La parola finale" autocomplete=off><button class=btn onclick="fin()">Apri il tesoro</button></div>`)}
+function hub(){const c=k=>Q[k].filter((q,i)=>S.ans[k+i]!==undefined).length;
+ const it=(v,t,s,d)=>`<button class="card row" onclick="go('${v}')"><div style="flex:1"><b>${t}</b><div class=m style="margin:0">${s}</div></div>${d?`<span class=tag>✓</span>`:"›"}</button>`;
+ return `<div class=bar><b>${S.team}</b><span class=pts>${pts()} pt</span></div>${msg()}
+ ${it("qr","Caccia ai QR",nq()+"/6 lettere",nq()===6)}
+ ${it("chi","Chi è chi",c("chi")+"/"+C.chi.length+" risposte",c("chi")===C.chi.length)}
+ ${it("anni","Anni ’86",c("anni")+"/"+C.anni.length+" risposte",c("anni")===C.anni.length)}
+ ${it("storia","La nostra storia",c("storia")+"/"+C.storia.length+" risposte",c("storia")===C.storia.length)}
+ ${it("photo","Missione foto",Object.keys(S.ph).length+"/"+C.foto.length+" fatte",Object.keys(S.ph).length===C.foto.length)}
+ ${it("kid","Missione piccoli",c("kid")+"/"+C.piccoli.length+" risposte",c("kid")===C.piccoli.length)}
+ ${it("fin","Il tesoro",nq()<6?"Bloccato: trovate tutte le lettere":S.fin?"Sbloccato":"Pronto da aprire",!!S.fin)}
+ <button class=back onclick="reset()">Ricomincia</button>`}
+function home(){return `<div class=big>40</div><h1>Il Tesoro dei 40</h1><p class=m>La festa di ${C.festeggiati.slice(0,-1).join(", ")} e ${C.festeggiati.slice(-1)}. Giocate in squadra con un solo telefono: cercate i QR, rispondete ai quiz, fate le foto e aprite il tesoro.</p>${msg()}
+ <div class=card><b>Come si chiama la vostra squadra?</b><input id=tn placeholder="Nome squadra" maxlength=30 autocomplete=off style="margin-top:8px;text-transform:none"><button class=btn onclick="start()">Si parte</button></div>`}
+function draw(){const v=S.team?S.view:"home";
+ $.innerHTML=v==="home"?home():v==="hub"?hub():v==="qr"?qrv():v==="photo"?photo():v==="fin"?finv():quiz(v);flash=""}
+addEventListener("hashchange",hash);
+if(location.hash&&got(location.hash.slice(1))){if(S.team)S.view="qr";save()}
+draw();
+</script></body></html>
